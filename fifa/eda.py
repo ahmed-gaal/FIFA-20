@@ -474,3 +474,113 @@ class Eda():
         plt.plot(x[sort_idx], tree.predict(x[sort_idx]), color = 'gold')
         plt.xlabel(feature)
         plt.ylabel(target)
+        return tree.predict(x[sort_idx])
+
+    def train_test(features, labels, target, size, model = str, ratio = None, depth = None):
+        """
+            Function for preprocessing the data, splitting data into training and test data and caclulate the accuracy of the model
+
+            Parameters:
+                features: features for predicting target variable
+                labels:   Categorical values that require preprocessing
+                target:   target variables
+                size:     Test size after splitting data
+                model:    Machine learning algorithm
+                ratio:    valid only if model is ElasticNet 
+                          The ElasticNet mixing parameter
+                depth:    depth of the tree. Valid only if model = tree, forest and ada
+            ______________________
+
+            Returns:
+                Mean Squared Error: MSE of the training and the test data
+                Coefficent of Determination r²: R² score of the training and the test data
+                Residual Analysis figure
+        """
+        ## Data Preprocessing ##
+        column_trans = make_column_transformer(
+        (OneHotEncoder(), labels),remainder = 'passthrough')
+        X = df[features]
+        y = df[target]
+        x = column_trans.fit_transform(X)
+        ## Splitting data for training and testing
+        x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = size, random_state = 0)
+        ## Instantiating the model ##
+        if model == 'linear':
+            model = LinearRegression()
+        elif model == 'ransac':
+            model = RANSACRegressor()
+        elif model == 'tree':
+            model = DecisionTreeRegressor(max_depth=depth)
+        elif model == 'elastic':
+            model = ElasticNet(l1_ratio=ratio, alpha = 1, max_iter=100)
+        elif model == 'ridge':
+            model = Ridge()
+        elif model == 'ada':
+            model = AdaBoostRegressor(DecisionTreeRegressor(max_depth = depth),
+                           n_estimators = 500, random_state = 42)
+        elif model == 'forest':
+            model = RandomForestRegressor(n_estimators=500, criterion='mse',
+                                   random_state=42, n_jobs=1)
+        ## fitting the model ##
+        model.fit(x_train, y_train)
+        ## prediction results ##
+        y_train_pred = model.predict(x_train)
+        y_test_pred = model.predict(x_test)
+        ## Printing the MSE and the R² score ##
+        print('Mean Squared Error: Training Data %.2f' %(mean_squared_error(y_train, y_train_pred)))
+        print('Mean Squared Error: Test Data %.2f' %(mean_squared_error(y_test, y_test_pred)))
+        print('Coefficient of Determination R²: Training Data %.2f' %(r2_score(y_train, y_train_pred)))
+        print('Coefficient of Determination R²: Test Data %.2f' %(r2_score(y_test, y_test_pred)))
+        ## Residual Analysis ##
+        plt.figure(figsize = (10, 8))
+        plt.scatter(y_train_pred, y_train_pred - y_train, c = 'lightgoldenrodyellow', label = 'Training data')
+        plt.scatter(y_test_pred, y_test_pred - y_test, c = 'tomato', label = 'Test data')
+        plt.hlines(y = 0, xmin = -10, xmax = 250, lw = 2, color = 'snow')
+        plt.xlabel('Predicted Values')
+        plt.ylabel('Residuals')
+        plt.legend(loc = 'best')
+        plt.show()
+
+    def learning_curve(features, labels, target, estimator, title, ylim = None, cv = None, n_jobs = 1, train_sizes = np.linspace(.1, 1.0, 5)):
+        '''
+            Function to determine cross-validated training and test scores for different training set sizes
+                Args:
+                    features: list or columns
+                    labels : list; columns with categorical values
+                    target: pd.Series or str; target variable
+                    estimator: model algorithm
+                    cv: Cross validation set
+            ______________________
+            Returns:
+                ❅ Learning Curves Figure
+        '''
+        column_trans = make_column_transformer(
+        (OneHotEncoder(), labels),remainder = 'passthrough')
+        X = df[features]
+        y = df[target]
+        x = column_trans.fit_transform(X)
+
+        plt.figure(figsize = (10, 8))
+        plt.title(title)
+        if ylim is not None:
+            plt.ylim(*ylim)
+        plt.xlabel('Training Examples')
+        plt.ylabel('Score')
+        train_sizes, train_scores, test_scores = learning_curve(
+            estimator, x, y, cv = cv, n_jobs = n_jobs, train_sizes =train_sizes)
+        train_scores_mean = np.mean(train_scores, axis = 1)
+        train_scores_std = np.std(train_scores, axis = 1)
+        test_scores_mean = np.mean(test_scores, axis = 1)
+        test_scores_std = np.std(test_scores, axis = 1)
+        plt.grid()
+
+        plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                         train_scores_mean + train_scores_std, alpha = 0.1, color = 'r')
+        plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                         test_scores_mean + test_scores_std, alpha = 0.1, color = 'g')
+        plt.plot(train_sizes, train_scores_mean, 'o-', color = 'r', label = 'Training score')
+        plt.plot(train_sizes, test_scores_mean, 'o-', color = 'g', label = 'Cross Validation Score')
+        plt.legend(loc = 'best')
+        plt.show()
+
+        return train_scores_mean, test_scores_mean
