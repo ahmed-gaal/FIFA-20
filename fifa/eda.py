@@ -11,7 +11,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.model_selection import train_test_split
+from sklearn.compose import make_column_transformer
+from sklearn.model_selection import train_test_split, learning_curve, ShuffleSplit
 plt.style.use('dark_background')
 
 df = pd.read_csv('fifa.csv', sep = ';')
