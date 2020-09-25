@@ -5,8 +5,8 @@ import seaborn as sb
 import ppscore as pps
 import sklearn
 from sklearn.ensemble import AdaBoostRegressor, RandomForestRegressor
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression, RANSACRegressor
+from sklearn.preprocessing import PolynomialFeatures, OneHotEncoder
+from sklearn.linear_model import LinearRegression, RANSACRegressor, Lasso, ElasticNet, Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
