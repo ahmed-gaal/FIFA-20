@@ -479,7 +479,7 @@ class Eda():
 
     def train_test(features, labels, target, size, model = str, ratio = None, depth = None):
         """
-            Function for preprocessing the data, splitting data into training and test data and caclulate the accuracy of the model
+            Function for preprocessing the data, splitting data into training and test data and calculate the accuracy of the model
 
             Parameters:
                 features: features for predicting target variable
@@ -489,12 +489,12 @@ class Eda():
                 model:    Machine learning algorithm
                 ratio:    valid only if model is ElasticNet 
                           The ElasticNet mixing parameter
-                depth:    depth of the tree. Valid only if model = tree, forest and ada
+                depth:    depth of the tree. Valid only if model = tree and ada
             ______________________
 
             Returns:
-                Mean Squared Error: MSE of the training and the test data
-                Coefficent of Determination r²: R² score of the training and the test data
+                Mean Squared Error of the training and the test data
+                Coefficent of Determination R² of the training and the test data
                 Residual Analysis figure
         """
         ## Data Preprocessing ##
@@ -553,6 +553,7 @@ class Eda():
                     cv: Cross validation set
             ______________________
             Returns:
+                ❅ Train and Test mean scores
                 ❅ Learning Curves Figure
         '''
         column_trans = make_column_transformer(
@@ -584,4 +585,7 @@ class Eda():
         plt.legend(loc = 'best')
         plt.show()
 
-        return train_scores_mean, test_scores_mean
+        vtrain = print('Training %.4f'.format(train_scores_mean))
+        vtest = print('Test %.4f'.format(test_scores_mean))
+
+        return vtrain, vtest
