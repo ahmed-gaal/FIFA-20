@@ -585,7 +585,7 @@ class Eda():
         plt.legend(loc = 'best')
         plt.show()
 
-        vtrain = print('Training {:.4f}'.format(train_scores_mean))
-        vtest = print('Test {:.4f}'.format(test_scores_mean))
+        print('Training {:.4f}'.format(train_scores_mean))
+        print('Test {:.4f}'.format(test_scores_mean))
 
-        return vtrain, vtest
+        
