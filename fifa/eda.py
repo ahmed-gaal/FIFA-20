@@ -351,7 +351,7 @@ class Eda():
         ## Plotting figure ##
         plt.figure(figsize = (10, 8))
         plt.scatter(x[inlier], y[inlier], c = 'darkorange', marker = 'o', label = 'Inliers')
-        plt.scatter(x[outlier], y[outlier], c = 'darkblue', marker = "*", label = 'Outliers')
+        plt.scatter(x[outlier], y[outlier], c = 'limegreen', marker = "*", label = 'Outliers')
         plt.plot(line_x, line_y_ransac, color = 'navajowhite')
         plt.legend(loc = 'best')
         plt.xlabel(feature)
@@ -391,7 +391,7 @@ class Eda():
         lw = 2
         plt.figure(figsize = (10, 8))
         plt.scatter(x[inlier], y[inlier], c = 'darkorange', marker = 'o', label = 'Inliers')
-        plt.scatter(x[outlier], y[outlier], c = 'darkblue', marker = "*", label = 'Outliers')
+        plt.scatter(x[outlier], y[outlier], c = 'limegreen', marker = "*", label = 'Outliers')
         plt.plot(line_x, line_y, color='red', linewidth=lw, label='Linear regressor')
         plt.plot(line_x, line_y_ransac, color = 'navajowhite', linewidth = lw, label ='RANSAC Regressor')
         plt.legend(loc = 'best')
@@ -539,6 +539,7 @@ class Eda():
         plt.hlines(y = 0, xmin = -10, xmax = 250, lw = 2, color = 'snow')
         plt.xlabel('Predicted Values')
         plt.ylabel('Residuals')
+        plt.title('Residual Analysis')
         plt.legend(loc = 'best')
         plt.show()
 
@@ -584,8 +585,6 @@ class Eda():
         plt.plot(train_sizes, test_scores_mean, 'o-', color = 'g', label = 'Cross Validation Score')
         plt.legend(loc = 'best')
         plt.show()
-
-        print('Training {:.4f}'.format(train_scores_mean))
-        print('Test {:.4f}'.format(test_scores_mean))
+        return train_scores_mean, test_scores_mean
 
         
