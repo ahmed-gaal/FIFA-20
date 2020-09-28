@@ -585,6 +585,7 @@ class Eda():
         plt.plot(train_sizes, test_scores_mean, 'o-', color = 'g', label = 'Cross Validation Score')
         plt.legend(loc = 'best')
         plt.show()
+        
         return train_scores_mean, test_scores_mean
 
         
