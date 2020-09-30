@@ -17,6 +17,7 @@ plt.style.use('dark_background')
 
 df = pd.read_csv('fifa.csv', sep = ';')
 new_df = df.sort_values(by = 'overall', ascending = False)
+pd.options.display.float_format = '{:,.4f}'.format
 
 class Eda():
     def __init__():
@@ -557,18 +558,20 @@ class Eda():
                 ❅ Train and Test mean scores
                 ❅ Learning Curves Figure
         '''
+        ## Data Preprocessing ##
         column_trans = make_column_transformer(
         (OneHotEncoder(), labels),remainder = 'passthrough')
         X = df[features]
         y = df[target]
         x = column_trans.fit_transform(X)
-
+        ## plotting figure ##
         plt.figure(figsize = (10, 8))
         plt.title(title)
         if ylim is not None:
             plt.ylim(*ylim)
         plt.xlabel('Training Examples')
         plt.ylabel('Score')
+        ## Model Validation with Learning curves
         train_sizes, train_scores, test_scores = learning_curve(
             estimator, x, y, cv = cv, n_jobs = n_jobs, train_sizes =train_sizes)
         train_scores_mean = np.mean(train_scores, axis = 1)
@@ -576,7 +579,6 @@ class Eda():
         test_scores_mean = np.mean(test_scores, axis = 1)
         test_scores_std = np.std(test_scores, axis = 1)
         plt.grid()
-
         plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
                          train_scores_mean + train_scores_std, alpha = 0.1, color = 'r')
         plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
@@ -585,7 +587,6 @@ class Eda():
         plt.plot(train_sizes, test_scores_mean, 'o-', color = 'g', label = 'Cross Validation Score')
         plt.legend(loc = 'best')
         plt.show()
-        
         return train_scores_mean, test_scores_mean
 
         
